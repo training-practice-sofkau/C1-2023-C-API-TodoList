@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using TodoListSofka.Data;
 using TodoListSofka.Model;
+using TodoListSofka.DTO;
+
 
 namespace TodoListSofka.Controllers
 {
@@ -19,12 +21,20 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
+
             try
             {
-                var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
+                //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
+                var toDoItems = from item in dbContext.ToDoItems
+                                where item.State != false
+                                select new GetToDoItemDTO()
+                                {   
+                                    Title = item.Title,
+                                    Description = item.Description,
+                                    Responsible = item.Responsible
+                                }; 
 
-
-                if (toDoItems.Count != 0 && toDoItems != null)
+                if (toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
