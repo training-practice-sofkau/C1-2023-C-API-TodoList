@@ -21,7 +21,7 @@ namespace TodoListSofka.Controllers
 		public async Task<List<TodoItem>> GetPersonajes()
 		{
 			//Busca los personajes que no hayan sido eliminados y los retorna
-			//var personajeActivo = dbContext.Tareas.Where(r => r.BanActivo != false).ToList();
+			//var personajeActivo = dbContext.Tareas.Where(r => r.State != false).ToList();
 			//return personajeActivo;
 
 			//Muestra todos los personajes 
@@ -35,6 +35,33 @@ namespace TodoListSofka.Controllers
 			if (personaje == null)
 				return NotFound("El personaje no existe");
 			return Ok(personaje);
+		}
+
+		[HttpPost]
+		public async Task<object> Post(TodoItem itemData)
+		{
+			dbContext.Add(itemData);
+			await dbContext.SaveChangesAsync();
+			return Ok();
+		}
+
+		[HttpPut]
+		public async Task<Object> Put(TodoItem itemData)
+		{
+			if (itemData == null || itemData.Id == 0)
+				return BadRequest("El ID no es correcto. ");
+
+			var personaje = await dbContext.Tareas.FindAsync(itemData.Id);
+			if (personaje == null)
+				return NotFound("El personaje no existe. ");
+			if (personaje.State == false)
+				return NotFound("El ha sido eliminado. ");
+			personaje.Title = itemData.Title;
+			personaje.Description = itemData.Description;
+			personaje.Responsible = itemData.Responsible;
+			personaje.IsCompleted = itemData.IsCompleted;
+			await dbContext.SaveChangesAsync();
+			return Ok();
 		}
 	}
 }
