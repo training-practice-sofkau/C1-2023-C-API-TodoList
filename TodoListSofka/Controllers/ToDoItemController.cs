@@ -25,6 +25,9 @@ namespace TodoListSofka.Controllers
             try
             {
                 //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
+
+                //consulta a la db mediante linq + DTO para get
+
                 var toDoItems = from item in dbContext.ToDoItems
                                 where item.State != false
                                 select new GetToDoItemDTO()
@@ -54,9 +57,20 @@ namespace TodoListSofka.Controllers
         {
             try
             {
-                var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
+                //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
 
-                if (toDoItems.Count != 0 && toDoItems != null)
+                //Get de una dato con LINQ + DTO
+
+                var toDoItems = from item in dbContext.ToDoItems
+                                where item.State != false && item.ItemId == id
+                                select new GetToDoItemDTO()
+                                {
+                                    Title = item.Title,
+                                    Description = item.Description,
+                                    Responsible = item.Responsible
+                                };
+
+                if (toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
@@ -69,6 +83,7 @@ namespace TodoListSofka.Controllers
 
             }
         }
+
         //Añadir items
         [HttpPost]
         public async Task<IActionResult> AddTask(AddToDoItem addToDoItem)
