@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TodoListSofka.Data;
+using AutoMapper;
+using TodoListSofka.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
