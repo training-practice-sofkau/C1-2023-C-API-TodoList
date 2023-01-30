@@ -21,7 +21,6 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-
             try
             {
                 //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
@@ -34,10 +33,11 @@ namespace TodoListSofka.Controllers
                                 {   
                                     Title = item.Title,
                                     Description = item.Description,
-                                    Responsible = item.Responsible
+                                    Responsible = item.Responsible,
+                                    IsCompleted = item.IsCompleted
                                 }; 
 
-                if (toDoItems != null)
+                if (toDoItems.Count() != 0 && toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
@@ -53,7 +53,7 @@ namespace TodoListSofka.Controllers
         //Se trae un item
         [HttpGet]
         [Route("{id:guid}")]
-        public async Task<IActionResult> GetTask([FromRoute] Guid id)
+        public async Task<IActionResult> GetItem([FromRoute] Guid id)
         {
             try
             {
@@ -67,10 +67,11 @@ namespace TodoListSofka.Controllers
                                 {
                                     Title = item.Title,
                                     Description = item.Description,
-                                    Responsible = item.Responsible
+                                    Responsible = item.Responsible,
+                                    IsCompleted = item.IsCompleted
                                 };
 
-                if (toDoItems != null)
+                if (toDoItems.Count() != 0 && toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
@@ -120,8 +121,8 @@ namespace TodoListSofka.Controllers
             {
                 var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id)
                     .ToListAsync();
-               // Where(list => list.State != false && list.ItemId == id)
-                if (ToDoItem != null)
+
+                if (ToDoItem.Count() != 0 && ToDoItem != null)
                 {
                     foreach (var item in ToDoItem)
                     {
@@ -141,9 +142,10 @@ namespace TodoListSofka.Controllers
             }
         }
 
+        //delete item con DTO
         [HttpDelete]
         [Route("{id:guid}")]
-        public async Task<IActionResult> DeleteTask([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
             try
             {

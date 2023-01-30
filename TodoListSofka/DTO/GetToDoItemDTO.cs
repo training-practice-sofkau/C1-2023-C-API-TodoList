@@ -15,5 +15,7 @@ namespace TodoListSofka.DTO
         public string Description { get; set; } = null!;
         [Required]
         public string Responsible { get; set; } = null!;
+        [Required]
+        public bool IsCompleted { get; set; }
     }
 }
