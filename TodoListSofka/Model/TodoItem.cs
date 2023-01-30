@@ -4,7 +4,7 @@ namespace TodoListSofka.Model
 {
     public class TodoItem
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
@@ -17,7 +17,7 @@ namespace TodoListSofka.Model
         //si es int puedo colcocar un rango entre o y 1
         public bool State { get; set; }
 
-        public TodoItem(Guid id, string title, string description, string responsible, 
+        public TodoItem(int id, string title, string description, string responsible, 
             bool isCompleted, bool state)
         {
             Id = id;
