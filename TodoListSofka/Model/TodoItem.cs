@@ -4,6 +4,7 @@ namespace TodoListSofka.Model
 {
     public class TodoItem
     {
+        [Required]
         public Guid Id { get; set; }
         [Required]
         public string Title { get; set; }
@@ -11,10 +12,12 @@ namespace TodoListSofka.Model
         public string Description { get; set; }
         [Required]
         public string Responsible { get; set; }
+        [Required]
         public bool IsCompleted { get; set; }
 
         //para el borrado lógico implementar bool o int según su preferencia.
         //si es int puedo colcocar un rango entre o y 1
+        [Required]
         public bool State { get; set; }
 
         public TodoItem(Guid id, string title, string description, string responsible, 
