@@ -84,7 +84,7 @@ namespace TodoListSofka.Controllers
             }
         }
 
-        //Añadir items
+        //Añadir items con DTO
         [HttpPost]
         public async Task<IActionResult> AddItem(AddToDoItemDTO addToDoItemDTO)
         {
@@ -111,22 +111,25 @@ namespace TodoListSofka.Controllers
             }
 
         }
-
+        //Actulizar item DTO
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateTask([FromRoute] Guid id, UpdateToDoItemDTO updateToDoItem)
+        public async Task<IActionResult> UpdateItem([FromRoute] Guid id, UpdateToDoItemDTO updateToDoItemDTO)
         {
             try
             {
-                var ToDoItem = await dbContext.ToDoItems.FindAsync(id);
-
+                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id)
+                    .ToListAsync();
+               // Where(list => list.State != false && list.ItemId == id)
                 if (ToDoItem != null)
                 {
-                    ToDoItem.Title = updateToDoItem.Title;
-                    ToDoItem.Description = updateToDoItem.Description;
-                    ToDoItem.Responsible = updateToDoItem.Responsible;
-                    ToDoItem.IsCompleted = updateToDoItem.IsCompleted;
-
+                    foreach (var item in ToDoItem)
+                    {
+                        item.Title = updateToDoItemDTO.Title;
+                        item.Description = updateToDoItemDTO.Description;
+                        item.Responsible = updateToDoItemDTO.Responsible;
+                        item.IsCompleted = updateToDoItemDTO.IsCompleted;
+                    }
                     await dbContext.SaveChangesAsync();
                     return Ok(ToDoItem);
                 }
@@ -136,8 +139,6 @@ namespace TodoListSofka.Controllers
             {
                 return BadRequest(new { code = 400, message = $"No se pudo modificar el elemento: {e.Message}" });
             }
-
-
         }
 
         [HttpDelete]
@@ -146,7 +147,8 @@ namespace TodoListSofka.Controllers
         {
             try
             {
-                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
+                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id)
+                    .ToListAsync();
 
                 if (ToDoItem.Count != 0 && ToDoItem != null)
                 {
