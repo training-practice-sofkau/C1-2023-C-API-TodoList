@@ -21,18 +21,19 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-
             try
             {
                 //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
+
+                //consulta a la db mediante linq + DTO para get
                 var toDoItems = from item in dbContext.ToDoItems
                                 where item.State != false
                                 select new GetToDoItemDTO()
-                                {   
+                                {
                                     Title = item.Title,
                                     Description = item.Description,
                                     Responsible = item.Responsible
-                                }; 
+                                };
 
                 if (toDoItems != null)
                 {
@@ -44,7 +45,6 @@ namespace TodoListSofka.Controllers
             catch (Exception e)
             {
                 return BadRequest(new { code = 404, message = $"No hay elementos para mostrar: {e.Message}" });
-
             }
         }
         //Se trae un item
