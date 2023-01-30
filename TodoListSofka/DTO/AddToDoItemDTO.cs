@@ -1,6 +1,6 @@
 ﻿namespace TodoListSofka.Model
 {
-    public class AddToDoItem
+    public class AddToDoItemDTO
     {
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;

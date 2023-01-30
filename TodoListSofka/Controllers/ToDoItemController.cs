@@ -21,19 +21,21 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
+
             try
             {
                 //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false).ToListAsync();
 
                 //consulta a la db mediante linq + DTO para get
+
                 var toDoItems = from item in dbContext.ToDoItems
                                 where item.State != false
                                 select new GetToDoItemDTO()
-                                {
+                                {   
                                     Title = item.Title,
                                     Description = item.Description,
                                     Responsible = item.Responsible
-                                };
+                                }; 
 
                 if (toDoItems != null)
                 {
@@ -45,6 +47,7 @@ namespace TodoListSofka.Controllers
             catch (Exception e)
             {
                 return BadRequest(new { code = 404, message = $"No hay elementos para mostrar: {e.Message}" });
+
             }
         }
         //Se trae un item
@@ -54,9 +57,20 @@ namespace TodoListSofka.Controllers
         {
             try
             {
-                var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
+                //var toDoItems = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
 
-                if (toDoItems.Count != 0 && toDoItems != null)
+                //Get de una dato con LINQ + DTO
+
+                var toDoItems = from item in dbContext.ToDoItems
+                                where item.State != false && item.ItemId == id
+                                select new GetToDoItemDTO()
+                                {
+                                    Title = item.Title,
+                                    Description = item.Description,
+                                    Responsible = item.Responsible
+                                };
+
+                if (toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
@@ -69,18 +83,19 @@ namespace TodoListSofka.Controllers
 
             }
         }
-        //Añadir items
+
+        //Añadir items con DTO
         [HttpPost]
-        public async Task<IActionResult> AddTask(AddToDoItem addToDoItem)
+        public async Task<IActionResult> AddItem(AddToDoItemDTO addToDoItemDTO)
         {
             try
             {
                 var ToDoItem = new ToDoItem()
                 {
                     ItemId = Guid.NewGuid(),
-                    Title = addToDoItem.Title,
-                    Description = addToDoItem.Description,
-                    Responsible = addToDoItem.Responsible,
+                    Title = addToDoItemDTO.Title,
+                    Description = addToDoItemDTO.Description,
+                    Responsible = addToDoItemDTO.Responsible,
                     IsCompleted = false,
                     State = true
                 };
@@ -96,22 +111,25 @@ namespace TodoListSofka.Controllers
             }
 
         }
-
+        //Actulizar item DTO
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateTask([FromRoute] Guid id, UpdateToDoItem updateToDoItem)
+        public async Task<IActionResult> UpdateItem([FromRoute] Guid id, UpdateToDoItemDTO updateToDoItemDTO)
         {
             try
             {
-                var ToDoItem = await dbContext.ToDoItems.FindAsync(id);
-
+                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id)
+                    .ToListAsync();
+               // Where(list => list.State != false && list.ItemId == id)
                 if (ToDoItem != null)
                 {
-                    ToDoItem.Title = updateToDoItem.Title;
-                    ToDoItem.Description = updateToDoItem.Description;
-                    ToDoItem.Responsible = updateToDoItem.Responsible;
-                    ToDoItem.IsCompleted = updateToDoItem.IsCompleted;
-
+                    foreach (var item in ToDoItem)
+                    {
+                        item.Title = updateToDoItemDTO.Title;
+                        item.Description = updateToDoItemDTO.Description;
+                        item.Responsible = updateToDoItemDTO.Responsible;
+                        item.IsCompleted = updateToDoItemDTO.IsCompleted;
+                    }
                     await dbContext.SaveChangesAsync();
                     return Ok(ToDoItem);
                 }
@@ -121,8 +139,6 @@ namespace TodoListSofka.Controllers
             {
                 return BadRequest(new { code = 400, message = $"No se pudo modificar el elemento: {e.Message}" });
             }
-
-
         }
 
         [HttpDelete]
@@ -131,7 +147,8 @@ namespace TodoListSofka.Controllers
         {
             try
             {
-                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id).ToListAsync();
+                var ToDoItem = await dbContext.ToDoItems.Where(list => list.State != false && list.ItemId == id)
+                    .ToListAsync();
 
                 if (ToDoItem.Count != 0 && ToDoItem != null)
                 {
