@@ -27,5 +27,14 @@ namespace TodoListSofka.Controllers
 			//Muestra todos los personajes 
 			return await dbContext.Tareas.ToListAsync();
 		}
+
+		[HttpGet("{id}")]
+		public async Task<Object> Get(int id)
+		{
+			var personaje = await dbContext.Tareas.FirstOrDefaultAsync(m => m.Id == id);
+			if (personaje == null)
+				return NotFound("El personaje no existe");
+			return Ok(personaje);
+		}
 	}
 }
