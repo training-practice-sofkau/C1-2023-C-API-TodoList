@@ -15,7 +15,7 @@ namespace TodoListSofka.Controllers
         {
             this.dbContext = dbContext;
         }
-
+        //Se traen todos los items
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
@@ -37,7 +37,7 @@ namespace TodoListSofka.Controllers
 
             }
         }
-
+        //Se trae un item
         [HttpGet]
         [Route("{id:guid}")]
         public async Task<IActionResult> GetTask([FromRoute] Guid id)
@@ -59,7 +59,7 @@ namespace TodoListSofka.Controllers
 
             }
         }
-
+        //Añadir items
         [HttpPost]
         public async Task<IActionResult> AddTask(AddToDoItem addToDoItem)
         {
