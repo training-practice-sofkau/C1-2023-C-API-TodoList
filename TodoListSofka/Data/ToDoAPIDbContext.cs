@@ -10,5 +10,18 @@ namespace TodoListSofka.Data
 		public ToDoAPIDbContext(DbContextOptions options) : base(options)
 		{
 		}
+
+		public override int SaveChanges()
+		{
+			foreach (var item in ChangeTracker.Entries()
+				.Where(e => e.State == EntityState.Deleted &&
+				e.Metadata.GetProperties().Any(x => x.Name == "State")))
+			{
+				item.State = EntityState.Unchanged;
+				item.CurrentValues["State"] = false;
+			}
+
+			return base.SaveChanges();
+		}
 	}
 }

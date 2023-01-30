@@ -70,5 +70,16 @@ namespace TodoListSofka.Controllers
 			await dbContext.SaveChangesAsync();
 			return Ok();
 		}
+
+		[HttpDelete("{id}")]
+		public async Task<Object> Delete(int id)
+		{
+			var tarea = await dbContext.Tareas.FindAsync(id);
+			if (tarea.State == false) return NotFound("El personaje ya ha sido eliminado. ");
+			if (tarea == null) return NotFound("ID incorrecto");
+			dbContext.Tareas.Remove(tarea);
+			dbContext.SaveChanges();
+			return Ok();
+		}
 	}
 }
