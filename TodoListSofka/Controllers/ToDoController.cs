@@ -21,11 +21,11 @@ namespace TodoListSofka.Controllers
 		public async Task<List<TodoItem>> GetPersonajes()
 		{
 			//Busca los personajes que no hayan sido eliminados y los retorna
-			//var personajeActivo = dbContext.Tareas.Where(r => r.State != false).ToList();
-			//return personajeActivo;
+			var personajeActivo = dbContext.Tareas.Where(r => r.State != false).ToList();
+			return personajeActivo;
 
 			//Muestra todos los personajes 
-			return await dbContext.Tareas.ToListAsync();
+			//return await dbContext.Tareas.ToListAsync();
 		}
 
 		[HttpGet("{id}")]
