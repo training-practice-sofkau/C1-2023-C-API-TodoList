@@ -38,9 +38,16 @@ namespace TodoListSofka.Controllers
 		}
 
 		[HttpPost]
-		public async Task<object> Post(TodoItem itemData)
+		public async Task<object> Post(ToDoCreateDTO tareaDto)
 		{
-			dbContext.Add(itemData);
+			var nuevaTarea = new TodoItem();
+			nuevaTarea.Title= tareaDto.Title;
+			nuevaTarea.Description= tareaDto.Description;
+			nuevaTarea.Responsible= tareaDto.Responsible;
+			nuevaTarea.IsCompleted= tareaDto.IsCompleted;
+			nuevaTarea.State = true;
+
+			dbContext.Add(nuevaTarea);
 			await dbContext.SaveChangesAsync();
 			return Ok();
 		}
