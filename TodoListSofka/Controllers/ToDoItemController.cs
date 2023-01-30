@@ -86,16 +86,16 @@ namespace TodoListSofka.Controllers
 
         //Añadir items
         [HttpPost]
-        public async Task<IActionResult> AddTask(AddToDoItem addToDoItem)
+        public async Task<IActionResult> AddItem(AddToDoItemDTO addToDoItemDTO)
         {
             try
             {
                 var ToDoItem = new ToDoItem()
                 {
                     ItemId = Guid.NewGuid(),
-                    Title = addToDoItem.Title,
-                    Description = addToDoItem.Description,
-                    Responsible = addToDoItem.Responsible,
+                    Title = addToDoItemDTO.Title,
+                    Description = addToDoItemDTO.Description,
+                    Responsible = addToDoItemDTO.Responsible,
                     IsCompleted = false,
                     State = true
                 };
@@ -114,7 +114,7 @@ namespace TodoListSofka.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateTask([FromRoute] Guid id, UpdateToDoItem updateToDoItem)
+        public async Task<IActionResult> UpdateTask([FromRoute] Guid id, UpdateToDoItemDTO updateToDoItem)
         {
             try
             {
