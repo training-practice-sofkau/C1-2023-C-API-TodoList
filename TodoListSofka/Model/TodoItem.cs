@@ -29,8 +29,5 @@ namespace TodoListSofka.Model
         }
 
         public TodoItem() { }
-
-
-
     }
 }

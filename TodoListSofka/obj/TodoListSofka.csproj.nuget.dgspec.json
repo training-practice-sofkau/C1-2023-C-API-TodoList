@@ -1,25 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Thanden\\Desktop\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj": {}
+    "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Thanden\\Desktop\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj": {
+    "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Thanden\\Desktop\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj",
+        "projectUniqueName": "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj",
         "projectName": "TodoListSofka",
-        "projectPath": "C:\\Users\\Thanden\\Desktop\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj",
-        "packagesPath": "C:\\Users\\Thanden\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Thanden\\Desktop\\C1-2023-C-API-TodoList\\TodoListSofka\\obj\\",
+        "projectPath": "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj",
+        "packagesPath": "C:\\Users\\kevin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Thanden\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\kevin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -45,9 +40,23 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.2.3, )"
+              "version": "[6.5.0, )"
             }
           },
           "imports": [
