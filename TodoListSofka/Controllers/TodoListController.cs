@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using TodoListSofka.Dto;
@@ -15,10 +16,7 @@ namespace TodoListSofka.Controllers
 
         private readonly TodolistContext _dbContext;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dbContext"></param>
+
         public TodoListController(TodolistContext dbContext)
         {
 
@@ -26,6 +24,10 @@ namespace TodoListSofka.Controllers
 
         }
 
+        /// <summary>
+        /// Funcional
+        /// </summary>
+        /// <returns></returns>
         //Metodo listar
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetItems()
@@ -44,41 +46,51 @@ namespace TodoListSofka.Controllers
 
         }
 
+        /// <summary>
+        /// Medio funcional
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         //Consultar un solo registro
         [HttpGet]
         [Route("{id:int}")]
         public async Task<ActionResult<TodoItem>> GetItem([FromRoute] int id)
         {
-
-            var item = await _dbContext.TodoItems.FindAsync(id);
-            // var activeRecords = _dbContext.Programmers.Where(r => r.IsActive != 0).ToList();
-
-            if (_dbContext == null)
+            try
             {
+                var item = await _dbContext.TodoItems.FindAsync(id);
+               // var result = _dbContext.TodoItems.Where(r => r.Estate != 0).ToList();
 
-                return NotFound();
 
-            }
-
-            if (item == null || item.Estate == 0)
-            {
-
-                return BadRequest(new
+                if (item.Estate == 0)
                 {
 
-                    code = 400,
-                    message = "No existe usuario con ese id por favor ingresar Id valido"
+                    return NotFound(new { 
+                    
+                    message = "La tarea con ese id no existe"
+                    
+                    });
 
-                });
+                }
 
+                return Ok(item);
             }
+            catch (Exception)
+            {
 
-            return Ok(item);
+                throw;
+            }
+           
         }
 
-
+        /// <summary>
+        /// medio funcional
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         //Metodo Post
         [HttpPost]
+        
         public async Task<ActionResult> PostItem(TodoItemAgregar item)
         {
             var items = new TodoItem()
@@ -97,77 +109,59 @@ namespace TodoListSofka.Controllers
             return Ok();
         }
 
-        //Metodo editar
+
+        /// <summary>
+        /// medio funcional
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="todoitemAc"></param>
+        /// <returns></returns>
+
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
         {
+            var item = await _dbContext.TodoItems.FindAsync(id);
 
-            var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
 
-            for (int i = 0; i < result.Count; i++)
-            {
+            if (item != null){
 
-                if (result[i].Estate == 0)
-                {
+                item.Title = todoitemAc.Title;
+                item.Descripcion = todoitemAc.Descripcion;
+                item.Responsible = todoitemAc.Responsible;
+                item.IsCompleted = todoitemAc.IsCompleted;
 
-                    return BadRequest(new
-                    {
 
-                        message = "Usuario a editar  no existe"
+                await _dbContext.SaveChangesAsync();
 
-                    });
-
-                }
-
+                
             }
 
-                var item = await _dbContext.TodoItems.FindAsync(id);
+            return Ok("La tarea se ha actualizado de forma correcta!");
 
-                if (item != null)
-                {
-
-                    item.Title = todoitemAc.Title;
-                    item.Descripcion = todoitemAc.Descripcion;
-                    item.Responsible = todoitemAc.Responsible;
-                    item.IsCompleted = todoitemAc.IsCompleted;
+        }
 
 
-                    await _dbContext.SaveChangesAsync();
-
-                    return Ok("La tarea se ha actualizado de forma correcta!");
-                }
-
-                return NotFound(new {
-                    code=404, 
-                    message="Este item no se encuentra rgistrado en su lista de tareas" 
-                    }
-                );
-            }
-
-
+        /// <summary>
+        /// medio funcional
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="complete"></param>
+        /// <returns></returns>
             [HttpPut]
             [Route("/completed/{id:int}")]
             public async Task<IActionResult> ActualizarOneItem([FromRoute] int id, bool complete){
 
-              try{
-                 var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
-                 for (int i = 0; i < result.Count; i++) {
+            //var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
 
-                    if (result[i].Estate == 0) {
-
-                        return BadRequest(new {
-                            code = 403,
-                            message = "Usuario a editar  no existe" });
-
-                    }
-                 }
-
+            try
+            { 
+                
                 var respon = await _dbContext.TodoItems.FindAsync(id);
                 respon.IsCompleted = complete;
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("La tarea se ha eliminado de forma correcta!");
+                return Ok("La tarea se ha editado de forma correcta!");
 
 
             }
@@ -187,6 +181,12 @@ namespace TodoListSofka.Controllers
 
             }
 
+
+        /// <summary>
+        /// Funcional
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
 
             //Metodo eliminar
 
@@ -214,9 +214,7 @@ namespace TodoListSofka.Controllers
                      }
                 );
             }
-            catch (Exception)
-            {
-
+            catch (Exception) { 
                 throw;
             }
 
@@ -235,90 +233,3 @@ namespace TodoListSofka.Controllers
 
 
 }
-
-
-
-
-
-
-/* try
-            {
-
-                if (string.IsNullOrWhiteSpace(pro.CompleteName))
-                {
-
-
-                    return BadRequest(new
-                    {
-                        code = 400,
-                        message = "El nombre es un dato requerido no dejar en blanco por favor"
-                    });
-
-
-                }
-
-
-                if (string.IsNullOrWhiteSpace(programmer.Email))
-                {
-
-
-                    return BadRequest(new
-                    {
-                        code = 400,
-                        message = "El correo electronico es un dato requerido no dejar en blanco por favor"
-                    });
-
-                }
-
-
-
-
-
-                if (programmer.IsActive == 0)
-                {
-
-
-                    return BadRequest(new
-                    {
-
-
-                        message = "Usuario no existe"
-
-
-                    });
-
-                }
-
-                if ((programmer.PhoneNumber.GetType()) == aux.GetType())
-                {
-
-                    return BadRequest(new
-                    {
-
-
-                        message = "No puedes ingresar texto en campos numericos "
-                    });
-
-
-
-                }
-
-                await _dbContext.SaveChangesAsync();
-
-            }
-
-            catch (DbUpdateConcurrencyException)
-            {
-
-                    if (!ProgrammerAvailable(id))
-                    {
-                        return NotFound("Not fount line 128");
-                    }
-                    else {
-
-                        throw;
-                    
-                    }
-
-            }
-*/
