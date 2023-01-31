@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TodoListSofka.DTO;
 using TodoListSofka.Models;
 
@@ -23,7 +24,7 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-            return Ok(await _context.Todoitems.Where(x=> x.State && !x.IsCompleted).ToListAsync());
+            return Ok(await _context.Todoitems.Where(x => x.State && !x.IsCompleted).ToListAsync());
         }
 
         //Get por id
@@ -31,12 +32,13 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetItem([FromRoute] Guid id)
         {
-            var product = await _context.Todoitems.FindAsync(id);
-            if (product == null)
+            var item = await _context.Todoitems.Where(x => x.Id == id && x.State && !x.IsCompleted).ToListAsync();
+            if (item.IsNullOrEmpty())
             {
                 return NotFound();
             }
-            return Ok(product);
+
+            return Ok(item[0]);
         }
 
         [HttpPost]
@@ -53,12 +55,12 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateItem([FromRoute] Guid id, TodoitemDTO dto)
         {
-            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
-            if (item != null)
+            var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
+            if (!item.IsNullOrEmpty())
             {
-                _mapper.Map(dto, item);
+                _mapper.Map(dto, item[0]);
                 await _context.SaveChangesAsync();
-                return Ok(item);
+                return Ok(item[0]);
             }
             return NotFound();
         }
@@ -68,10 +70,11 @@ namespace TodoListSofka.Controllers
         [Route("updateComplete/{id:Guid}")]
         public async Task<IActionResult> CompleteItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
-            if (item != null)
+            var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
+
+            if (!item.IsNullOrEmpty())
             {
-                item.IsCompleted = true;
+                item[0].IsCompleted = true;
                 await _context.SaveChangesAsync();
                 return Ok(item);
             }
