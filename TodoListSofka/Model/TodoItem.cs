@@ -12,7 +12,7 @@ public partial class TodoItem
     public string Descripcion { get; set; } = null!;
 
     public string? Responsible { get; set; }
-
+    
     public bool IsCompleted { get; set; }
 
     public int Estate { get; set; }

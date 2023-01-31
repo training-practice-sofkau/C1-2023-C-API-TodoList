@@ -25,11 +25,17 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetItems()
         {
+            try
+            {
+                var activeRecords = _dbContext.TodoItems.Where(r => r.Estate != 0).ToList();
+                return activeRecords;
+            }
+            catch (Exception)
+            {
 
-            var activeRecords = _dbContext.TodoItems.Where(r => r.Estate != 0).ToList();
+                throw;
+            }
 
-
-            return activeRecords;
 
         }
 
@@ -91,81 +97,123 @@ namespace TodoListSofka.Controllers
         public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
         {
 
+            var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
 
 
-
-
-
-
-            var item = await _dbContext.TodoItems.FindAsync(id);
-
-            if (item != null)
+            for (int i = 0; i < result.Count; i++)
             {
 
-                item.Title = todoitemAc.Title;
-                item.Descripcion = todoitemAc.Descripcion;
-                item.Responsible = todoitemAc.Responsible;
-                item.IsCompleted = todoitemAc.IsCompleted;
+                if (result[i].Estate == 0)
+                {
 
 
-                await _dbContext.SaveChangesAsync();
+                    return BadRequest(new
+                    {
 
-                return Ok("La tarea se ha actualizado de forma correcta!");
+
+                        message = "Usuario a editar  no existe"
+
+
+                    });
+
+                }
+
+
+
             }
 
-            return NotFound();
-        }
-
-        
-        [HttpPut]
-        [Route("/completed/{id:int}")]
-        public async Task<IActionResult> ActualizarOneItem([FromRoute] int id, bool complete)
-        {
-            var respon = await _dbContext.TodoItems.FindAsync(id);
-
-                respon.IsCompleted = complete;
-                await _dbContext.SaveChangesAsync();
-
-                return Ok("La tarea se ha Finalizado de forma correcta!");
-            
-
-           
-        }
-
-        
 
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteItem(int id)
-        {
+                var item = await _dbContext.TodoItems.FindAsync(id);
 
-            var item = await _dbContext.TodoItems.FindAsync(id);
-            var recordToUpdate = _dbContext.TodoItems.FirstOrDefault(r => r.Id == id);
+                if (item != null)
+                {
 
-            if (recordToUpdate != null)
-            {
+                    item.Title = todoitemAc.Title;
+                    item.Descripcion = todoitemAc.Descripcion;
+                    item.Responsible = todoitemAc.Responsible;
+                    item.IsCompleted = todoitemAc.IsCompleted;
 
-                recordToUpdate.Estate = 0;
-                _dbContext.SaveChanges();
-            }
-            else
-            {
+
+                    await _dbContext.SaveChangesAsync();
+
+                    return Ok("La tarea se ha actualizado de forma correcta!");
+                }
 
                 return NotFound();
             }
 
 
-            return Ok(new
+            [HttpPut]
+            [Route("/completed/{id:int}")]
+            public async Task<IActionResult> ActualizarOneItem([FromRoute] int id, bool complete){
+                
+
+                var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
+            for (int i = 0; i < result.Count; i++)
             {
 
-                code = 200,
-                message = $"El usuario con id {id} fue eliminado"
-            });
+                if (result[i].Estate == 0)
+                {
+
+
+                    return BadRequest(new
+                    {
+
+
+                        message = "Usuario a editar  no existe"
+
+
+                    });
+
+                }
+            }
+
+                var respon = await _dbContext.TodoItems.FindAsync(id);
+                respon.IsCompleted = complete;
+                await _dbContext.SaveChangesAsync();
+
+                return Ok("La tarea se ha Finalizado de forma correcta!");
+
+            }
+
+
+
+
+            [HttpDelete("{id}")]
+            public async Task<ActionResult> DeleteItem(int id)
+            {
+
+                var item = await _dbContext.TodoItems.FindAsync(id);
+                var recordToUpdate = _dbContext.TodoItems.FirstOrDefault(r => r.Id == id);
+
+                if (recordToUpdate != null)
+                {
+
+                    recordToUpdate.Estate = 0;
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+
+                    return NotFound();
+                }
+
+
+                return Ok(new
+                {
+
+                    code = 200,
+                    message = $"El usuario con id {id} fue eliminado"
+                });
+            }
+
         }
 
     }
 
-}
+
+
 
 /* try
             {
