@@ -24,7 +24,19 @@ namespace TodoListSofka.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-            return Ok(await _context.Todoitems.Where(x => x.State && !x.IsCompleted).ToListAsync());
+            try
+            {
+                var item = await _context.Todoitems.Where(x => x.State && !x.IsCompleted).ToListAsync();
+                if (item.IsNullOrEmpty())
+                {
+                    return BadRequest(new { code = 404, message = "No hay items para mostrar" });
+                }
+                return Ok(item);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { code = 500, message = $"No se puede listar: {e.Message}" });
+            }
         }
 
         //Get por id
@@ -32,13 +44,20 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.Where(x => x.Id == id && x.State && !x.IsCompleted).ToListAsync();
-            if (item.IsNullOrEmpty())
+            try
             {
-                return NotFound();
-            }
+                var item = await _context.Todoitems.Where(x => x.Id == id && x.State && !x.IsCompleted).ToListAsync();
+                if (item.IsNullOrEmpty())
+                {
+                    return BadRequest(new { code = 404, message = "No hay items para mostrar con ese id" });
+                }
 
-            return Ok(item[0]);
+                return Ok(item[0]);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { code = 500, message = $"No se puede mostrar el item: {e.Message}" });
+            }
         }
 
         [HttpPost]
@@ -55,14 +74,23 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateItem([FromRoute] Guid id, TodoitemDTO dto)
         {
-            var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
-            if (!item.IsNullOrEmpty())
+            try
             {
-                _mapper.Map(dto, item[0]);
-                await _context.SaveChangesAsync();
-                return Ok(item[0]);
+                var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
+                if (!item.IsNullOrEmpty())
+                {
+                    _mapper.Map(dto, item[0]);
+                    await _context.SaveChangesAsync();
+                    return Ok(item[0]);
+                }
+
+                return BadRequest(new { code = 404, message = "No hay items para actualizar con ese id" });
             }
-            return NotFound();
+            catch (Exception e)
+            {
+                return BadRequest(new { code = 500, message = $"No se puede mostrar el item: {e.Message}" });
+            }
+
         }
 
         //Metodo para indicar que la tarea se completó
@@ -70,15 +98,22 @@ namespace TodoListSofka.Controllers
         [Route("updateComplete/{id:Guid}")]
         public async Task<IActionResult> CompleteItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
-
-            if (!item.IsNullOrEmpty())
+            try
             {
-                item[0].IsCompleted = true;
-                await _context.SaveChangesAsync();
-                return Ok(item);
+                var item = await _context.Todoitems.Where(x => x.Id == id && x.State).ToListAsync();
+
+                if (!item.IsNullOrEmpty())
+                {
+                    item[0].IsCompleted = true;
+                    await _context.SaveChangesAsync();
+                    return Ok(item);
+                }
+                return BadRequest(new { code = 404, message = "No hay items para actualizar con ese id" });
             }
-            return NotFound();
+            catch (Exception e)
+            {
+                return BadRequest(new { code = 500, message = $"No se puede actualizar el item: {e.Message}" });
+            }
         }
 
         //Eliminado Logico 
@@ -86,14 +121,22 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
-            if (item != null)
+            try
             {
-                item.State = false;
-                await _context.SaveChangesAsync();
-                return Ok(item);
+                var item = await _context.Todoitems.FindAsync(id); //Agregar filtro LINQ
+                if (item != null)
+                {
+                    item.State = false;
+                    await _context.SaveChangesAsync();
+                    return Ok(item);
+                }
+
+                return BadRequest(new { code = 404, message = "No hay items para eliminar con ese id" });
             }
-            return NotFound();
+            catch (Exception e)
+            {
+                return BadRequest(new { code = 500, message = $"No se puede eliminar el item: {e.Message}" });
+            }
         }
 
 
