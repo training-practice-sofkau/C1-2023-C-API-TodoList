@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace TodoListSofka.Model
+namespace TodoListSofka.DTO
 {
     public class AddToDoItemDTO
     {

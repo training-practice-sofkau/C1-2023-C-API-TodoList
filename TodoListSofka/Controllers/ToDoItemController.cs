@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TodoListSofka.Data;
 using TodoListSofka.Model;
 using TodoListSofka.DTO;
-
+using AutoMapper;
 
 namespace TodoListSofka.Controllers
 {
@@ -13,10 +13,12 @@ namespace TodoListSofka.Controllers
     {
         //creamos una variable del contexto
         private readonly DatabaseFirstBloggingContext dbContext;
+        private readonly IMapper _mapper;
 
-        public ToDoListController(DatabaseFirstBloggingContext dbContext)
+        public ToDoListController(DatabaseFirstBloggingContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            _mapper = mapper;
         }
 
         //Se traen todos los items
@@ -113,14 +115,10 @@ namespace TodoListSofka.Controllers
         {
             try
             {
-                var ToDoItem = new ToDoItem()
+                var ToDoItem = _mapper.Map<ToDoItem>(addToDoItemDTO);
                 {
-                    ItemId = Guid.NewGuid(),
-                    Title = addToDoItemDTO.Title,
-                    Description = addToDoItemDTO.Description,
-                    Responsible = addToDoItemDTO.Responsible,
-                    IsCompleted = false,
-                    State = true
+                    ToDoItem.IsCompleted = false;
+                    ToDoItem.State = true;
                 };
 
                 await dbContext.ToDoItems.AddAsync(ToDoItem);

@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "11VVFq5J5iQIXLFKDGdy4a6y46ZBsUPa45vywVUkLyZjechOlLuE48HzpTBM7T3YXj6rIi0V2RJpNHs7Dw1auA==",
+  "dgSpecHash": "qFz0lAsdwfJOlKmk+KaGrRBXsBtBz15cssZLSeXdo3VimHq4oPzJ1Fc3uzlX2mXkVnTqzuqSSTnenqp+YZoynQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\kevin\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\Sofka\\Training\\Dev\\Semana 2\\Reto API Todo LIst\\C1-2023-C-API-TodoList\\TodoListSofka\\TodoListSofka.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kevin\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\kevin\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\kevin\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\kevin\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\kevin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
