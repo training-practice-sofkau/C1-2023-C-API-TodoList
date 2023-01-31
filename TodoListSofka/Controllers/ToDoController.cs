@@ -29,18 +29,27 @@ namespace TodoListSofka.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<Object> Get(int id)
+		public async Task<IActionResult> Get(int id)
 		{
-			var tarea = await dbContext.Tareas.FirstOrDefaultAsync(m => m.Id == id);
-			if (tarea == null)
-				return NotFound("El personaje no existe");
-			return Ok(tarea);
+			try
+			{
+				var tarea = await dbContext.Tareas.Where(r => r.State != false && r.Id == id).ToListAsync();
+				if (tarea != null)
+					return Ok(tarea);
+				return BadRequest(new { code = 404, message = "Id no encontrado. "});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new { code = 404, message = $"Id no encontrado. : {ex.Message}" });
+			}
+			
+			
 		}
 
 		[HttpGet("/Prioridad")]
-		public async Task<Object> GetPriority()
+		public async Task<Object> GetPriority(string importancia)
 		{
-			var tareaImportante = dbContext.Tareas.Where(r => r.Priority == "Alta").ToList();
+			var tareaImportante = dbContext.Tareas.Where(r => r.Priority == importancia && r.State != false).ToList();
 			return tareaImportante;
 		}
 
