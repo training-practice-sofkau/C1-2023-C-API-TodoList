@@ -56,6 +56,21 @@ namespace TodoListSofka.Controllers
             }
             return NotFound();
         }
-        
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
+        {
+            var item = await _context.Todoitems.FindAsync(id);
+            if (item != null)
+            {
+                item.State = false;
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            return NotFound();
+        }
+
+
     }
 }
