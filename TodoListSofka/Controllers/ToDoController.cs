@@ -89,9 +89,18 @@ namespace TodoListSofka.Controllers
 			tarea.Responsible = itemData.Responsible;
 			tarea.Priority = itemData.Priority;
 			tarea.IsCompleted = itemData.IsCompleted;
-			await dbContext.SaveChangesAsync();
-			return Ok();
-		}
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (!itemData(id))
+            {
+                return NotFound();
+            }
+            return Ok();
+
+        }
 
 		[HttpPut("/Estado/{id:int}")]
 		public async Task<Object> PutEstado(int id, bool estado)
