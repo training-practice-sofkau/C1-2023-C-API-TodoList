@@ -37,7 +37,7 @@ namespace TodoListSofka.Controllers
 				var tarea = await dbContext.Tareas.Where(r => r.State != false && r.Id == id).ToListAsync();
 				if (tarea == null || id == 0 || tarea.Count == 0)
 				{
-					return BadRequest(new { code = 404, message = "Id no encontrado. "});
+					return BadRequest(new { code = 400, message = "Id no encontrado. "});
 				}
 				else
 				{
@@ -46,7 +46,7 @@ namespace TodoListSofka.Controllers
 			}
 			catch(Exception ex)
 			{
-				return BadRequest(new { code = 404, message = $"Id no encontrado. : {ex.Message}" });
+				return NotFound(new { code = 404, message = $"Id no encontrado. : {ex.Message}" });
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace TodoListSofka.Controllers
 		}
 
 		[HttpPut]
-		public async Task<Object> Put(TodoItem itemData)
+		public async Task<Object> Put(ToDoUpdateDto itemData)
 		{
 			if (itemData == null || itemData.Id == 0)
 				return BadRequest("El ID no es correcto. ");
@@ -94,9 +94,9 @@ namespace TodoListSofka.Controllers
             {
                 await dbContext.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException) when (!itemData(id))
+            catch (DbUpdateConcurrencyException ex)
             {
-                return NotFound();
+                return NotFound(new { code = 404, message = $"Id no encontrado. : {ex.Message}" });
             }
             return Ok();
 
