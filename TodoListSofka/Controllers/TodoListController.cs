@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 using TodoListSofka.Model;
 
 namespace TodoListSofka.Controllers
@@ -65,13 +66,22 @@ namespace TodoListSofka.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostItem(TodoItem item)
+        public async Task<ActionResult> PostItem(TodoItemAgregar item)
         {
+            var items = new TodoItem()
+            {
+                Title = item.Title,
+                Descripcion = item.Descripcion,
+                Responsible = item.Responsible,
+                IsCompleted = item.IsCompleted,
+                Estate = 1
+            };
+            
 
-            _dbContext.TodoItems.Add(item);
-
+            await  _dbContext.TodoItems.AddAsync(items);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetItems), new { id = item.Id }, item);
+
+            return Ok();
 
         }
 
