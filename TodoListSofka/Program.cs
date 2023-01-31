@@ -12,7 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DatabaseFirstBloggingContext>();
+var stringConnection = builder.Configuration.GetConnectionString("ToDoListApiConnectionString");
+builder.Services.AddDbContext<DatabaseFirstBloggingContext>(options => options.UseSqlServer(stringConnection));
 
 var app = builder.Build();
 
