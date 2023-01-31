@@ -20,10 +20,10 @@ public partial class Todoitem
     public string Responsible { get; set; } = null!;
 
     [DefaultValue(false)]
-    public bool IsCompleted { get; set; }
+    public bool IsCompleted { get; set; } = false;
 
-    [DefaultValue(true)]
-    public bool State { get; set; }
+    [DefaultValue(true)] //no sirve
+    public bool State { get; set; } = true;
 }
 /*
 CREATE DATABASE TODOLISTDB
