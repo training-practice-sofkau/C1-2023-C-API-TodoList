@@ -54,7 +54,7 @@ namespace TodoListSofka.Controllers
 		}
 
 		[HttpPost]
-		public async Task<object> Post(ToDoCreateDTO tareaDto)
+		public async Task<Object> Post(ToDoCreateDTO tareaDto)
 		{
 			var nuevaTarea = new TodoItem();
 			nuevaTarea.Title = tareaDto.Title;
