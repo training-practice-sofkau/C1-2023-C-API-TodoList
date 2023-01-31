@@ -42,6 +42,20 @@ namespace TodoListSofka.Controllers
             return NotFound();
         }
 
-
+        //Metodo para indicar que la tarea se completó
+        [HttpPut]
+        [Route("updateComplete/{id:Guid}")]
+        public async Task<IActionResult> CompleteItem([FromRoute] Guid id)
+        {
+            var item = await _context.Todoitems.FindAsync(id);
+            if (item != null)
+            {
+                item.IsCompleted = true;
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            return NotFound();
+        }
+        
     }
 }
