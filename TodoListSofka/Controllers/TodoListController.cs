@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Runtime.Intrinsics.X86;
 using TodoListSofka.Dto;
 using TodoListSofka.Model;
 
@@ -14,6 +15,10 @@ namespace TodoListSofka.Controllers
 
         private readonly TodolistContext _dbContext;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbContext"></param>
         public TodoListController(TodolistContext dbContext)
         {
 
@@ -92,6 +97,7 @@ namespace TodoListSofka.Controllers
             return Ok();
         }
 
+        //Metodo editar
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
@@ -99,30 +105,22 @@ namespace TodoListSofka.Controllers
 
             var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
 
-
             for (int i = 0; i < result.Count; i++)
             {
 
                 if (result[i].Estate == 0)
                 {
 
-
                     return BadRequest(new
                     {
 
-
                         message = "Usuario a editar  no existe"
-
 
                     });
 
                 }
 
-
-
             }
-
-
 
                 var item = await _dbContext.TodoItems.FindAsync(id);
 
@@ -140,45 +138,57 @@ namespace TodoListSofka.Controllers
                     return Ok("La tarea se ha actualizado de forma correcta!");
                 }
 
-                return NotFound();
+                return NotFound(new {
+                    code=404, 
+                    message="Este item no se encuentra rgistrado en su lista de tareas" 
+                    }
+                );
             }
 
 
             [HttpPut]
             [Route("/completed/{id:int}")]
             public async Task<IActionResult> ActualizarOneItem([FromRoute] int id, bool complete){
-                
 
-                var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
-            for (int i = 0; i < result.Count; i++)
-            {
+              try{
+                 var result = _dbContext.TodoItems.Where(r => r.Estate == 0).ToList();
+                 for (int i = 0; i < result.Count; i++) {
 
-                if (result[i].Estate == 0)
-                {
+                    if (result[i].Estate == 0) {
 
+                        return BadRequest(new {
+                            code = 403,
+                            message = "Usuario a editar  no existe" });
 
-                    return BadRequest(new
-                    {
-
-
-                        message = "Usuario a editar  no existe"
-
-
-                    });
-
-                }
-            }
+                    }
+                 }
 
                 var respon = await _dbContext.TodoItems.FindAsync(id);
                 respon.IsCompleted = complete;
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("La tarea se ha Finalizado de forma correcta!");
+                return Ok("La tarea se ha eliminado de forma correcta!");
+
+
+            }
+
+            catch (DbUpdateConcurrencyException) {
+
+                if (!ItemAvailable(id)) { 
+
+                    return NotFound("Problemas en la actualizacion de la base de datos");
+
+                }
+                else{
+                    throw;
+                }
+
+            }
 
             }
 
 
-
+            //Metodo eliminar
 
             [HttpDelete("{id}")]
             public async Task<ActionResult> DeleteItem(int id)
@@ -187,30 +197,46 @@ namespace TodoListSofka.Controllers
                 var item = await _dbContext.TodoItems.FindAsync(id);
                 var recordToUpdate = _dbContext.TodoItems.FirstOrDefault(r => r.Id == id);
 
+            try
+            {
                 if (recordToUpdate != null)
                 {
-
                     recordToUpdate.Estate = 0;
                     _dbContext.SaveChanges();
                 }
-                else
-                {
-
-                    return NotFound();
-                }
+                else { return NotFound(); }
 
 
                 return Ok(new
                 {
-
                     code = 200,
                     message = $"El usuario con id {id} fue eliminado"
-                });
+                     }
+                );
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+                
+            }
+
+
+        private bool ItemAvailable(int id)
+        {
+
+            return (_dbContext.TodoItems?.Any(x => x.Id == id)).GetValueOrDefault();
 
         }
 
     }
+
+
+}
+
+
 
 
 
