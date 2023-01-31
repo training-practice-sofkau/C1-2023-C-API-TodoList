@@ -35,7 +35,7 @@ namespace TodoListSofka.Controllers
         //Consultar un solo registro
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<TodoItem>> GetItem([FromRoute]int id)
+        public async Task<ActionResult<TodoItem>> GetItem([FromRoute] int id)
         {
 
             var item = await _dbContext.TodoItems.FindAsync(id);
@@ -85,36 +85,60 @@ namespace TodoListSofka.Controllers
             return Ok();
         }
 
-            [HttpPut]
-            [Route("{id:int}")]
-            public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
-            {
-                var item = await _dbContext.TodoItems.FindAsync(id);
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
+        {
+            var item = await _dbContext.TodoItems.FindAsync(id);
 
-                if (item != null)
-                {
+            if (item != null)
+            {
 
                 item.Title = todoitemAc.Title;
                 item.Descripcion = todoitemAc.Descripcion;
                 item.Responsible = todoitemAc.Responsible;
-                item.IsCompleted = todoitemAc.IsCompleted; 
-   
+                item.IsCompleted = todoitemAc.IsCompleted;
 
-                   await _dbContext.SaveChangesAsync();
 
-                    return Ok("La tarea se ha actualizado de forma correcta!");
-                }
+                await _dbContext.SaveChangesAsync();
 
-                return NotFound();
+                return Ok("La tarea se ha actualizado de forma correcta!");
             }
 
+            return NotFound();
         }
 
 
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteItem(int id)
+        {
+
+            var item = await _dbContext.TodoItems.FindAsync(id);
+            var recordToUpdate = _dbContext.TodoItems.FirstOrDefault(r => r.Id == id);
+
+            if (recordToUpdate != null)
+            {
+
+                recordToUpdate.Estate = 0;
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+
+                return NotFound();
+            }
 
 
+            return Ok(new
+            {
 
+                code = 200,
+                message = $"El usuario con id {id} fue eliminado"
+            });
+        }
 
     }
+
+}
 
