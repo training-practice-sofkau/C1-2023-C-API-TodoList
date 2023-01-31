@@ -20,31 +20,39 @@ namespace TodoListSofka.Controllers
 		[HttpGet]
 		public async Task<List<TodoItem>> GetPersonajes()
 		{
-			//Busca los personajes que no hayan sido eliminados y los retorna
-			//var personajeActivo = dbContext.Tareas.Where(r => r.State != false).ToList();
-			//return personajeActivo;
+			//Busca las Tareas que no hayan sido eliminados y los retorna
+			var tareaActiva = dbContext.Tareas.Where(r => r.State != false).ToList();
+			return tareaActiva;
 
 			//Muestra todos los personajes 
-			return await dbContext.Tareas.ToListAsync();
+			//return await dbContext.Tareas.ToListAsync();
 		}
 
 		[HttpGet("{id}")]
 		public async Task<Object> Get(int id)
 		{
-			var personaje = await dbContext.Tareas.FirstOrDefaultAsync(m => m.Id == id);
-			if (personaje == null)
+			var tarea = await dbContext.Tareas.FirstOrDefaultAsync(m => m.Id == id);
+			if (tarea == null)
 				return NotFound("El personaje no existe");
-			return Ok(personaje);
+			return Ok(tarea);
+		}
+
+		[HttpGet("/Prioridad")]
+		public async Task<Object> GetPriority()
+		{
+			var tareaImportante = dbContext.Tareas.Where(r => r.Priority == "Alta").ToList();
+			return tareaImportante;
 		}
 
 		[HttpPost]
 		public async Task<object> Post(ToDoCreateDTO tareaDto)
 		{
 			var nuevaTarea = new TodoItem();
-			nuevaTarea.Title= tareaDto.Title;
-			nuevaTarea.Description= tareaDto.Description;
-			nuevaTarea.Responsible= tareaDto.Responsible;
-			nuevaTarea.IsCompleted= tareaDto.IsCompleted;
+			nuevaTarea.Title = tareaDto.Title;
+			nuevaTarea.Description = tareaDto.Description;
+			nuevaTarea.Responsible = tareaDto.Responsible;
+			nuevaTarea.Priority = tareaDto.Priority;
+			nuevaTarea.IsCompleted = tareaDto.IsCompleted;
 			nuevaTarea.State = true;
 
 			dbContext.Add(nuevaTarea);
@@ -58,15 +66,25 @@ namespace TodoListSofka.Controllers
 			if (itemData == null || itemData.Id == 0)
 				return BadRequest("El ID no es correcto. ");
 
-			var personaje = await dbContext.Tareas.FindAsync(itemData.Id);
-			if (personaje == null)
+			var tarea = await dbContext.Tareas.FindAsync(itemData.Id);
+			if (tarea == null)
 				return NotFound("El personaje no existe. ");
-			if (personaje.State == false)
+			if (tarea.State == false)
 				return NotFound("El ha sido eliminado. ");
-			personaje.Title = itemData.Title;
-			personaje.Description = itemData.Description;
-			personaje.Responsible = itemData.Responsible;
-			personaje.IsCompleted = itemData.IsCompleted;
+			tarea.Title = itemData.Title;
+			tarea.Description = itemData.Description;
+			tarea.Responsible = itemData.Responsible;
+			tarea.Priority = itemData.Priority;
+			tarea.IsCompleted = itemData.IsCompleted;
+			await dbContext.SaveChangesAsync();
+			return Ok();
+		}
+
+		[HttpPut("/Estado/{id:int}")]
+		public async Task<Object> PutEstado(int id, bool estado)
+		{
+			var tarea = await dbContext.Tareas.FindAsync(id);
+			tarea.IsCompleted = estado;
 			await dbContext.SaveChangesAsync();
 			return Ok();
 		}

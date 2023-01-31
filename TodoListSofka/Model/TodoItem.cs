@@ -11,7 +11,10 @@ namespace TodoListSofka.Model
         public string Description { get; set; }
         [Required]
         public string Responsible { get; set; }
-        public bool IsCompleted { get; set; }
+        [Required]
+        public string Priority { get; set; }
+
+		public bool IsCompleted { get; set; }
 
         //para el borrado lógico implementar bool o int según su preferencia.
         //si es int puedo colcocar un rango entre o y 1
