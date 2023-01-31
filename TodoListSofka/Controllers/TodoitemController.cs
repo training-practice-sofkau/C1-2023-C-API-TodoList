@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TodoListSofka.Data;
+using TodoListSofka.DTO;
 using TodoListSofka.Models;
 
 namespace TodoListSofka.Controllers
@@ -17,6 +17,17 @@ namespace TodoListSofka.Controllers
             _context = context;
             _mapper = mapper;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddItem(TodoitemDTO dto)
+        {
+            Todoitem item = _mapper.Map<Todoitem>(dto);
+            await _context.AddAsync(item);
+            await _context.SaveChangesAsync();
+
+            return Ok(item);
+        }
+
 
 
 
