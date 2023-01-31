@@ -5,14 +5,10 @@ namespace TodoListSofka.Model
     public class TodoItem
     {
         public int Id { get; set; }
-        [Required]
-        public string Title { get; set; }
-        [Required]
-        public string Description { get; set; }
-        [Required]
-        public string Responsible { get; set; }
-        [Required]
-        public string Priority { get; set; }
+        [Required] public string Title { get; set; } = null!;
+        [Required] public string Description { get; set; } = null!;
+		[Required] public string Responsible { get; set; } = null!; 
+        [Required] public string Priority { get; set; } = null!;
 
 		public bool IsCompleted { get; set; }
 

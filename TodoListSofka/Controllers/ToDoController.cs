@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoListSofka.Data;
+using TodoListSofka.DTO;
 using TodoListSofka.Model;
 
 namespace TodoListSofka.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("api/[controller]")]
 	public class ToDoController : ControllerBase
 	{
@@ -18,11 +19,11 @@ namespace TodoListSofka.Controllers
 		}
 
 		[HttpGet]
-		public async Task<List<TodoItem>> GetPersonajes()
+		public async Task<IActionResult> GetPersonajes()
 		{
 			//Busca las Tareas que no hayan sido eliminados y los retorna
 			var tareaActiva = dbContext.Tareas.Where(r => r.State != false).ToList();
-			return tareaActiva;
+			return Ok(tareaActiva);
 
 			//Muestra todos los personajes 
 			//return await dbContext.Tareas.ToListAsync();
@@ -34,16 +35,19 @@ namespace TodoListSofka.Controllers
 			try
 			{
 				var tarea = await dbContext.Tareas.Where(r => r.State != false && r.Id == id).ToListAsync();
-				if (tarea != null)
+				if (tarea == null || id == 0 || tarea.Count == 0)
+				{
+					return BadRequest(new { code = 404, message = "Id no encontrado. "});
+				}
+				else
+				{
 					return Ok(tarea);
-				return BadRequest(new { code = 404, message = "Id no encontrado. "});
+				}
 			}
 			catch(Exception ex)
 			{
 				return BadRequest(new { code = 404, message = $"Id no encontrado. : {ex.Message}" });
 			}
-			
-			
 		}
 
 		[HttpGet("/Prioridad")]
@@ -77,9 +81,9 @@ namespace TodoListSofka.Controllers
 
 			var tarea = await dbContext.Tareas.FindAsync(itemData.Id);
 			if (tarea == null)
-				return NotFound("El personaje no existe. ");
+				return NotFound("La tarea no existe. ");
 			if (tarea.State == false)
-				return NotFound("El ha sido eliminado. ");
+				return NotFound("la tarea se ha sido eliminado. ");
 			tarea.Title = itemData.Title;
 			tarea.Description = itemData.Description;
 			tarea.Responsible = itemData.Responsible;
