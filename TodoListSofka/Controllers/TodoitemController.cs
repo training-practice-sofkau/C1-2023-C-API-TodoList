@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoListSofka.DTO;
 using TodoListSofka.Models;
 
@@ -18,6 +19,13 @@ namespace TodoListSofka.Controllers
             _mapper = mapper;
         }
 
+        //Metodo que retorna la lista de los items activos y no completos
+        [HttpGet]
+        public async Task<IActionResult> GetItems()
+        {
+            return Ok(await _context.Todoitems.Where(x=> x.State && !x.IsCompleted).ToListAsync());
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddItem(TodoitemDTO dto)
         {
@@ -32,7 +40,7 @@ namespace TodoListSofka.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateItem([FromRoute] Guid id, TodoitemDTO dto)
         {
-            var item = await _context.Todoitems.FindAsync(id);
+            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
             if (item != null)
             {
                 _mapper.Map(dto, item);
@@ -47,7 +55,7 @@ namespace TodoListSofka.Controllers
         [Route("updateComplete/{id:Guid}")]
         public async Task<IActionResult> CompleteItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.FindAsync(id);
+            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
             if (item != null)
             {
                 item.IsCompleted = true;
@@ -57,11 +65,12 @@ namespace TodoListSofka.Controllers
             return NotFound();
         }
 
+        //Eliminado Logico 
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
-            var item = await _context.Todoitems.FindAsync(id);
+            var item = await _context.Todoitems.FindAsync(id);//Agregar filtro LINQ
             if (item != null)
             {
                 item.State = false;
