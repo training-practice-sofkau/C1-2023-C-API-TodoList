@@ -20,6 +20,6 @@ Links de referencias
 - https://learn.microsoft.com/es-es/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-2?source=recommendations						
 														
 														
-### Entre Pull Request por Aprendiz
+### Entre Pull Request por ksbcoder
 
 #### AdryanYnfante																		
