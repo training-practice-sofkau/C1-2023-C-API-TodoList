@@ -28,7 +28,19 @@ namespace TodoListSofka.Controllers
             return Ok(item);
         }
 
-
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateItem([FromRoute] Guid id, TodoitemDTO dto)
+        {
+            var item = await _context.Todoitems.FindAsync(id);
+            if (item != null)
+            {
+                _mapper.Map(dto, item);
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            return NotFound();
+        }
 
 
     }
