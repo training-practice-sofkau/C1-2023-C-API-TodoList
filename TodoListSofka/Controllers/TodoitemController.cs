@@ -26,6 +26,19 @@ namespace TodoListSofka.Controllers
             return Ok(await _context.Todoitems.Where(x=> x.State && !x.IsCompleted).ToListAsync());
         }
 
+        //Get por id
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetItem([FromRoute] Guid id)
+        {
+            var product = await _context.Todoitems.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddItem(TodoitemDTO dto)
         {
