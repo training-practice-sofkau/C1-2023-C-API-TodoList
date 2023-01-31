@@ -4,7 +4,7 @@ namespace TodoListSofka.Dto
 {
     public class TodoItemComplete
     {
-        [Required]
+        [Required(ErrorMessage = "Por favor ingresar el dato, no dejar el dato vacio")]
         public int IsCompleted { get; set; }
     
 

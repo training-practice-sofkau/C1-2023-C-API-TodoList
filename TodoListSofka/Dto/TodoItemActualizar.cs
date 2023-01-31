@@ -4,13 +4,14 @@ namespace TodoListSofka.Dto
 {
     public class TodoItemActualizar
     {
-        [Required]
+        [Required(ErrorMessage = "Por favor ingresar el dato, no dejar el dato vacio")]
         public string Title { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Por favor ingresar el dato, no dejar el dato vacio")]
         public string Descripcion { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Por favor ingresar el dato, no dejar el dato vacio")]
         public string? Responsible { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Por favor ingresar el dato, no dejar el dato vacio")]
         public bool IsCompleted { get; set; }
     }
 }
