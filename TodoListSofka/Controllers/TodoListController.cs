@@ -64,6 +64,20 @@ namespace TodoListSofka.Controllers
 
 
 
+        [HttpPost]
+        public async Task<ActionResult<TodoItem>> PostItem(TodoItem item)
+        {
+
+            _dbContext.TodoItems.Add(item);
+
+            await _dbContext.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetItems), new { id = item.Id }, item);
+
+        }
+
+
+
+
 
 
 
