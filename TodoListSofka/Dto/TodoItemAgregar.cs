@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TodoListSofka.Model
+namespace TodoListSofka.Dto
 {
-    public class TodoItemActualizar
+    public class TodoItemAgregar
     {
         [Required]
         public string Title { get; set; } = null!;
@@ -11,6 +11,7 @@ namespace TodoListSofka.Model
         [Required]
         public string? Responsible { get; set; }
         [Required]
-        public int IsCompleted { get; set; }
+        public bool IsCompleted { get; set; }
+
     }
 }

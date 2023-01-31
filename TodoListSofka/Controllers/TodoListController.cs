@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using TodoListSofka.Dto;
 using TodoListSofka.Model;
 
 namespace TodoListSofka.Controllers
@@ -89,6 +90,13 @@ namespace TodoListSofka.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
         {
+
+
+
+
+
+
+
             var item = await _dbContext.TodoItems.FindAsync(id);
 
             if (item != null)
@@ -108,6 +116,23 @@ namespace TodoListSofka.Controllers
             return NotFound();
         }
 
+        
+        [HttpPut]
+        [Route("/completed/{id:int}")]
+        public async Task<IActionResult> ActualizarOneItem([FromRoute] int id, bool complete)
+        {
+            var respon = await _dbContext.TodoItems.FindAsync(id);
+
+                respon.IsCompleted = complete;
+                await _dbContext.SaveChangesAsync();
+
+                return Ok("La tarea se ha Finalizado de forma correcta!");
+            
+
+           
+        }
+
+        
 
 
         [HttpDelete("{id}")]
@@ -142,3 +167,84 @@ namespace TodoListSofka.Controllers
 
 }
 
+/* try
+            {
+
+                if (string.IsNullOrWhiteSpace(pro.CompleteName))
+                {
+
+
+                    return BadRequest(new
+                    {
+                        code = 400,
+                        message = "El nombre es un dato requerido no dejar en blanco por favor"
+                    });
+
+
+                }
+
+
+                if (string.IsNullOrWhiteSpace(programmer.Email))
+                {
+
+
+                    return BadRequest(new
+                    {
+                        code = 400,
+                        message = "El correo electronico es un dato requerido no dejar en blanco por favor"
+                    });
+
+                }
+
+
+
+
+
+                if (programmer.IsActive == 0)
+                {
+
+
+                    return BadRequest(new
+                    {
+
+
+                        message = "Usuario no existe"
+
+
+                    });
+
+                }
+
+                if ((programmer.PhoneNumber.GetType()) == aux.GetType())
+                {
+
+                    return BadRequest(new
+                    {
+
+
+                        message = "No puedes ingresar texto en campos numericos "
+                    });
+
+
+
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+            }
+
+            catch (DbUpdateConcurrencyException)
+            {
+
+                    if (!ProgrammerAvailable(id))
+                    {
+                        return NotFound("Not fount line 128");
+                    }
+                    else {
+
+                        throw;
+                    
+                    }
+
+            }
+*/

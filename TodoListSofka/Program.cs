@@ -9,9 +9,6 @@ builder.Services.AddDbContext<TodolistContext>(options => options.UseSqlServer(b
 
 
 
-
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
