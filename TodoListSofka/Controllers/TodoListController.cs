@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TodoListSofka.Model;
 
@@ -64,7 +65,7 @@ namespace TodoListSofka.Controllers
         }
 
 
-
+        //Metodo Post
         [HttpPost]
         public async Task<ActionResult> PostItem(TodoItemAgregar item)
         {
@@ -76,12 +77,36 @@ namespace TodoListSofka.Controllers
                 IsCompleted = item.IsCompleted,
                 Estate = 1
             };
-            
 
-            await  _dbContext.TodoItems.AddAsync(items);
+
+            await _dbContext.TodoItems.AddAsync(items);
             await _dbContext.SaveChangesAsync();
 
             return Ok();
+        }
+
+            [HttpPut]
+            [Route("{id:int}")]
+            public async Task<IActionResult> ActualizarItem([FromRoute] int id, TodoItemActualizar todoitemAc)
+            {
+                var item = await _dbContext.TodoItems.FindAsync(id);
+
+                if (item != null)
+                {
+
+                item.Title = todoitemAc.Title;
+                item.Descripcion = todoitemAc.Descripcion;
+                item.Responsible = todoitemAc.Responsible;
+                item.IsCompleted = todoitemAc.IsCompleted; 
+   
+
+                   await _dbContext.SaveChangesAsync();
+
+                    return Ok("La tarea se ha actualizado de forma correcta!");
+                }
+
+                return NotFound();
+            }
 
         }
 
@@ -92,4 +117,4 @@ namespace TodoListSofka.Controllers
 
 
     }
-}
+
