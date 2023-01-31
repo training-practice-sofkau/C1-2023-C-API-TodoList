@@ -30,6 +30,37 @@ namespace TodoListSofka.Controllers
 
         }
 
+        //Consultar un solo registro
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<TodoItem>> GetItem([FromRoute]int id)
+        {
+
+            var item = await _dbContext.TodoItems.FindAsync(id);
+            // var activeRecords = _dbContext.Programmers.Where(r => r.IsActive != 0).ToList();
+
+            if (_dbContext == null)
+            {
+
+                return NotFound();
+
+            }
+
+            if (item == null || item.Estate == 0)
+            {
+
+                return BadRequest(new
+                {
+
+                    code = 400,
+                    message = "No existe usuario con ese id por favor ingresar Id valido"
+
+                });
+
+            }
+
+            return Ok(item);
+        }
 
 
 
