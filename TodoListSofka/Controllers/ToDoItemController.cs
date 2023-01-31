@@ -4,6 +4,7 @@ using TodoListSofka.Data;
 using TodoListSofka.Model;
 using TodoListSofka.DTO;
 using AutoMapper;
+using TodoListSofka.PatternDesign;
 
 namespace TodoListSofka.Controllers
 {
@@ -29,19 +30,29 @@ namespace TodoListSofka.Controllers
             {
                 //consulta a la db mediante linq + DTO para get de todos los elementos
 
-                var toDoItems = from item in dbContext.ToDoItems
-                                where item.State
-                                select new GetToDoItemDTO()
-                                {
-                                    Title = item.Title,
-                                    Description = item.Description,
-                                    Responsible = item.Responsible,
-                                    IsCompleted = item.IsCompleted
-                                };
+                //var toDoItems = from item in dbContext.ToDoItems
+                //                where item.State
+                //                select new GetToDoItemDTO()
+                //                {
+                //                    Title = item.Title,
+                //                    Description = item.Description,
+                //                    Responsible = item.Responsible,
+                //                    IsCompleted = item.IsCompleted
+                //                };
 
-                if (toDoItems.Count() != 0 && toDoItems != null)
+                var toDoItems = await dbContext.ToDoItems.Where(list => list.State).ToListAsync();
+
+                //Creamos la instancia del creador de listas (Singleton Pattern)
+                CreatorList listMapped = CreatorList.GetInstance();
+
+                if (toDoItems.Count != 0 && toDoItems != null)
                 {
-                    return Ok(toDoItems);
+                    listMapped.ListItems.Clear();
+                    foreach (var item in toDoItems)
+                    {
+                        listMapped.ListItems.Add(_mapper.Map<GetToDoItemDTO>(item));
+                    }
+                    return Ok(listMapped);
                 }
                 return BadRequest(new { code = 404, message = "No hay elementos para mostrar" });
             }
@@ -58,19 +69,22 @@ namespace TodoListSofka.Controllers
             try
             {
                 //consulta a la db mediante linq + DTO para get de elementos sin completar
-                var toDoItems = from item in dbContext.ToDoItems
-                                where item.State && !item.IsCompleted
-                                select new GetToDoItemDTO()
-                                {
-                                    Title = item.Title,
-                                    Description = item.Description,
-                                    Responsible = item.Responsible,
-                                    IsCompleted = item.IsCompleted
-                                };
 
-                if (toDoItems.Count() != 0 && toDoItems != null)
+                var toDoItems = await dbContext.ToDoItems.Where(list => list.State && !list.IsCompleted)
+                    .ToListAsync();
+
+                //Creamos la instancia del creador de listas (Singleton Pattern)
+                CreatorList listMapped = CreatorList.GetInstance();
+                
+                if (toDoItems.Count != 0 && toDoItems != null)
                 {
-                    return Ok(toDoItems);
+                    //vaciar la lista cada vez que "cree" la instancia para usarla
+                    listMapped.ListItems.Clear();
+                    foreach (var item in toDoItems)
+                    {
+                        listMapped.ListItems.Add(_mapper.Map<GetToDoItemDTO>(item));
+                    }
+                    return Ok(listMapped);
                 }
                 return BadRequest(new { code = 404, message = "No hay elementos para mostrar" });
             }
@@ -97,7 +111,7 @@ namespace TodoListSofka.Controllers
                                     IsCompleted = item.IsCompleted
                                 };
 
-                if (toDoItems.Count() != 0 && toDoItems != null)
+                if (toDoItems.Any() && toDoItems != null)
                 {
                     return Ok(toDoItems);
                 }
@@ -141,7 +155,7 @@ namespace TodoListSofka.Controllers
                 var ToDoItem = await dbContext.ToDoItems.Where(list => list.State && list.ItemId == id)
                     .ToListAsync();
 
-                if (ToDoItem.Count() != 0 && ToDoItem != null)
+                if (ToDoItem.Count != 0 && ToDoItem != null)
                 {
                     foreach (var item in ToDoItem)
                     {
@@ -170,7 +184,7 @@ namespace TodoListSofka.Controllers
                 var ToDoItem = await dbContext.ToDoItems.Where(list => list.State && !list.IsCompleted && list.ItemId == id)
                     .ToListAsync();
 
-                if (ToDoItem.Count() != 0 && ToDoItem != null)
+                if (ToDoItem.Count != 0 && ToDoItem != null)
                 {
                     foreach (var item in ToDoItem)
                     {
