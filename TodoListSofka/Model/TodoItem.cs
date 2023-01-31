@@ -13,7 +13,7 @@ public partial class TodoItem
 
     public string? Responsible { get; set; }
 
-    public int IsCompleted { get; set; }
+    public bool IsCompleted { get; set; }
 
     public int Estate { get; set; }
 }
